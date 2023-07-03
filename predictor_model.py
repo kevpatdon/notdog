@@ -14,7 +14,7 @@ def get_image_paths(folder_path):
 data_folder = "Training_Data"
 subfolders = ["dogs"]
 
-def load_model():
+def train_model():
     X_train = []  # Reset X_train list for each model loading
     for subfolder in subfolders:
         subfolder_path = os.path.join(data_folder, subfolder)
@@ -34,4 +34,7 @@ def load_model():
     with open('model.pkl', 'wb') as file:
         pickle.dump(model, file)
     
-    return model
+    print("Model training completed. Saved as model.pkl")
+
+if __name__ == "__main__":
+    train_model()
