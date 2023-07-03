@@ -3,6 +3,13 @@ from PIL import Image
 import numpy as np
 from sklearn.svm import OneClassSVM
 
+def get_image_paths(folder_path):
+    image_paths = []
+    for filename in os.listdir(folder_path):
+        if filename.endswith(".jpg") or filename.endswith(".jpeg") or filename.endswith(".png"):
+            image_paths.append(os.path.join(folder_path, filename))
+    return image_paths
+
 data_folder = "Training_Data"
 subfolders = ["dogs"]
 X_train = []
