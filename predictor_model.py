@@ -13,7 +13,7 @@ def get_image_paths(folder_path):
 data_folder = "Training_Data"
 subfolders = ["dogs"]
 
-def train_model():
+def load_model():
     X_train = []  # Reset X_train list for each model loading
     for subfolder in subfolders:
         subfolder_path = os.path.join(data_folder, subfolder)
