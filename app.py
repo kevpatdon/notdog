@@ -1,9 +1,3 @@
-import os
-from PIL import Image
-import streamlit as st
-from prediction import process_input
-from predictor_model import load_model
-
 def main():
     st.title("Image Classification App")
     st.write("Upload an image and the app will make predictions.")
@@ -20,12 +14,13 @@ def main():
         if st.button('Make Prediction'):
             # Create the 'uploads' directory if it doesn't exist
             os.makedirs('uploads', exist_ok=True)
-            
+
             image_path = os.path.join('uploads', uploaded_file.name)
             image.save(image_path)
             model = load_model()
             prediction = process_input(image_path, model)
-            st.write("Prediction:", prediction)
 
-if __name__ == '__main__':
-    main()
+            if prediction == 1:
+                st.image('dog.jpg', caption='This is a dog.')
+            else:
+                st.image('notdog.jpg', caption='This is not a dog.')
