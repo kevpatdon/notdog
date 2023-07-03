@@ -2,7 +2,6 @@ import os
 from PIL import Image
 import numpy as np
 from sklearn.svm import OneClassSVM
-import pickle
 
 def get_image_paths(folder_path):
     image_paths = []
@@ -29,12 +28,4 @@ def train_model():
     X_train = np.array(X_train)
     model = OneClassSVM(nu=0.2)
     model.fit(X_train)
-    
-    # Save the model as a pickle file
-    with open('model.pkl', 'wb') as file:
-        pickle.dump(model, file)
-    
-    print("Model training completed. Saved as model.pkl")
-
-if __name__ == "__main__":
-    train_model()
+    return model
