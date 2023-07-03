@@ -12,10 +12,9 @@ def get_image_paths(folder_path):
 
 data_folder = "Training_Data"
 subfolders = ["dogs"]
-X_train = []
 
 def load_model():
-    global X_train
+    X_train = []  # Reset X_train list for each model loading
     for subfolder in subfolders:
         subfolder_path = os.path.join(data_folder, subfolder)
         image_paths = get_image_paths(subfolder_path)
