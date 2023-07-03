@@ -1,7 +1,6 @@
 import os
 from PIL import Image
 import numpy as np
-from sklearn.svm import OneClassSVM
 
 def process_input(image, model):
     img = Image.open(image)
