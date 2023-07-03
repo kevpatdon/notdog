@@ -5,7 +5,7 @@ from prediction import process_input
 from predictor_model import load_model
 
 def main():
-    st.title("Is it a dog?")
+    st.title("DOG? NOT DOG?")
     st.write("Upload an image and the app will determine whether this is an image of a dog.")
 
     uploaded_file = st.file_uploader("Choose an image", type=["jpg", "jpeg", "png"])
@@ -17,7 +17,7 @@ def main():
         image = Image.open(uploaded_file)
         st.image(image, caption='Uploaded Image', use_column_width=True)
 
-        if st.button('Is it a dog?'):
+        if st.button('Is this a dog?'):
             # Create the 'uploads' directory if it doesn't exist
             os.makedirs('uploads', exist_ok=True)
 
