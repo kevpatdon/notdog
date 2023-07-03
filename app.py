@@ -24,3 +24,8 @@ def main():
                 st.image('dog.jpg', caption='This is a dog.')
             else:
                 st.image('notdog.jpg', caption='This is not a dog.')
+
+
+
+if __name__ == '__main__':
+    main()
