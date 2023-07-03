@@ -17,7 +17,7 @@ def main():
         image = Image.open(uploaded_file)
         st.image(image, caption='Uploaded Image', use_column_width=True)
 
-        if st.button('Is this a dog?'):
+        if st.button('Is that a dog?'):
             # Create the 'uploads' directory if it doesn't exist
             os.makedirs('uploads', exist_ok=True)
 
@@ -27,9 +27,9 @@ def main():
             prediction = process_input(image_path, model)
 
             if prediction == 1:
-                st.image('dog.jpg', caption='This is a dog.')
+                st.image('dog.jpg', caption='That is a dog.')
             else:
-                st.image('notdog.jpg', caption='This is not a dog.')
+                st.image('notdog.jpg', caption='That is not a dog.')
 
 
 if __name__ == '__main__':
