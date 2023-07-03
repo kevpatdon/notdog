@@ -1,6 +1,12 @@
+import os
+from PIL import Image
+import streamlit as st
+from prediction import process_input
+from predictor_model import load_model
+
 def main():
-    st.title("Image Classification App")
-    st.write("Upload an image and the app will make predictions.")
+    st.title("Is it a dog?")
+    st.write("Upload an image and the app will determine whether this is an image of a dog.")
 
     uploaded_file = st.file_uploader("Choose an image", type=["jpg", "jpeg", "png"])
 
@@ -24,7 +30,6 @@ def main():
                 st.image('dog.jpg', caption='This is a dog.')
             else:
                 st.image('notdog.jpg', caption='This is not a dog.')
-
 
 
 if __name__ == '__main__':
