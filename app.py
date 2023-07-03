@@ -18,6 +18,9 @@ def main():
         st.image(image, caption='Uploaded Image', use_column_width=True)
 
         if st.button('Make Prediction'):
+            # Create the 'uploads' directory if it doesn't exist
+            os.makedirs('uploads', exist_ok=True)
+            
             image_path = os.path.join('uploads', uploaded_file.name)
             image.save(image_path)
             model = load_model()
