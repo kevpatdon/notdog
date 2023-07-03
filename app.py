@@ -12,12 +12,12 @@ def main():
 
     if uploaded_file is not None:
         file_details = {"FileName": uploaded_file.name, "FileType": uploaded_file.type}
-        st.write(file_details)
+        # st.write(file_details)
 
         image = Image.open(uploaded_file)
         st.image(image, caption='Uploaded Image', use_column_width=True)
 
-        if st.button('Make Prediction'):
+        if st.button('Is it a dog?'):
             # Create the 'uploads' directory if it doesn't exist
             os.makedirs('uploads', exist_ok=True)
 
