@@ -2,7 +2,13 @@ import os
 from PIL import Image
 import streamlit as st
 from prediction import process_input
-from predictor_model import train_model
+import pickle
+
+def load_model():
+    # Load the model from the pickle file
+    with open('model.pkl', 'rb') as file:
+        model = pickle.load(file)
+    return model
 
 def main():
     st.title("DOG? NOT DOG?")
@@ -24,7 +30,7 @@ def main():
             image_path = os.path.join('uploads', uploaded_file.name)
             image.save(image_path)
 
-            model = train_model()  # Load the model
+            model = load_model()  # Load the model from the pickle file
             prediction = process_input(image_path, model)
 
             if prediction == 1:
