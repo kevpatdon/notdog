@@ -16,6 +16,8 @@ def main():
 
         model = load_model()  # Load the model
 
+        os.makedirs("uploads", exist_ok=True)  # Create the "uploads" directory
+
         for uploaded_file in uploaded_files:
             dog_count += 1
             not_dog_count += 1
@@ -56,6 +58,7 @@ def main():
 
             # Remove the uploaded file after processing
             os.remove(image_path)
+
 
 
 if __name__ == '__main__':
