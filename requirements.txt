@@ -2,3 +2,4 @@ streamlit
 Pillow
 opencv-python
 scikit-learn
+xgboost
