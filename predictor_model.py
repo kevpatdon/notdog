@@ -1,48 +1,31 @@
 import os
-from PIL import Image
-import numpy as np
-import xgboost as xgb
-from sklearn.model_selection import train_test_split
+import tensorflow as tf
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
-def get_image_paths(folder_path):
-    image_paths = []
-    for filename in os.listdir(folder_path):
-        if filename.endswith(".jpg") or filename.endswith(".jpeg") or filename.endswith(".png"):
-            image_paths.append(os.path.join(folder_path, filename))
-    return image_paths
+def train_model():
+    data_folder = "Training_Data"
+    subfolders = ["dogs", "test_dogs"]
+    target_size = (32, 32)
+    batch_size = 32
+    epochs = 10
 
-data_folder = "Training_Data"
-subfolders = ["dogs", "not_dogs"]
+    # Create ImageDataGenerator for data augmentation and normalization
+    data_generator = ImageDataGenerator(rescale=1.0 / 255.0)
 
-def load_model():
-    X_train = []  # Reset X_train list for each model loading
-    y_train = []
-    for label, subfolder in enumerate(subfolders):
-        subfolder_path = os.path.join(data_folder, subfolder)
-        image_paths = get_image_paths(subfolder_path)
-        for image_path in image_paths:
-            img = Image.open(image_path)
-            img = img.resize((100, 100))
-            img = img.convert("L")
-            img = np.array(img)
-            img = img.flatten()
-            X_train.append(img)
-            y_train.append(label)
-    X_train = np.array(X_train)
-    y_train = np.array(y_train)
+    # Load and prepare the training data
+    train_data = data_generator.flow_from_directory(
+        os.path.join(data_folder, subfolders[0]),
+        target_size=target_size,
+        batch_size=batch_size,
+        class_mode="binary"
+    )
 
-    X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.2, random_state=42)
-
-    dtrain = xgb.DMatrix(X_train, label=y_train)
-    dval = xgb.DMatrix(X_val, label=y_val)
-
-    params = {
-        "objective": "binary:logistic",
-        "eval_metric": "logloss",
-        "eta": 0.3,
-        "max_depth": 3
-    }
-
-    model = xgb.train(params, dtrain, num_boost_round=100, evals=[(dval, "Validation")])
-
-    return model
+    # Build the model
+    model = Sequential([
+        Conv2D(32, (3, 3), activation='relu', padding='same', input_shape=(32, 32, 3)),
+        MaxPooling2D((2, 2)),
+        Conv2D(64, (3, 3), activation='relu', padding='same'),
+        MaxPooling2D((2, 
