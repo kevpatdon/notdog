@@ -25,26 +25,38 @@ def main():
 
             file_details = {"FileName": uploaded_file.name, "FileType": uploaded_file.type}
 
-            image = Image.open(uploaded_file)
+            image_path = os.path.join("uploads", uploaded_file.name)
+            with open(image_path, "wb") as f:
+                f.write(uploaded_file.getbuffer())
+
+            image = Image.open(image_path)
             st.image(image, caption='Uploaded Image', use_column_width=True)
 
             if st.button('Is that a dog?'):
-                prediction = process_input(image, model)
+                prediction = process_input(image_path, model)
 
                 if prediction == 1:
                     st.image('dog.jpg', caption='That is a dog.')
-                    if st.button('Incorrect'):
+
+                    correct = st.button('Correct')
+                    if not correct:
                         dogs_folder = "Training_Data/dogs"
                         new_filename = f"dog.{dog_count}"
-                        image_path = os.path.join(dogs_folder, new_filename + ".jpg")
-                        image.save(image_path)
+                        new_image_path = os.path.join(dogs_folder, new_filename + ".jpg")
+                        image.save(new_image_path)
                 else:
                     st.image('notdog.jpg', caption='That is not a dog.')
-                    if st.button('Incorrect'):
+
+                    correct = st.button('Correct')
+                    if not correct:
                         not_dogs_folder = "Training_Data/not_dogs"
                         new_filename = f"cat.{not_dog_count}"
-                        image_path = os.path.join(not_dogs_folder, new_filename + ".jpg")
-                        image.save(image_path)
+                        new_image_path = os.path.join(not_dogs_folder, new_filename + ".jpg")
+                        image.save(new_image_path)
+
+            # Remove the uploaded file after processing
+            os.remove(image_path)
+
 
 if __name__ == '__main__':
     main()
