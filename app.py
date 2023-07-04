@@ -35,7 +35,7 @@ def main():
             if st.button('Is that a dog?'):
                 prediction = process_input(image_path, model)
 
-                if prediction == 1:
+                if prediction == "dogs":
                     st.image('dog.jpg', caption='That is a dog.')
 
                     correct = st.button('Correct')
