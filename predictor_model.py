@@ -11,7 +11,7 @@ image_height = 128
 model_filename = 'autoencoder_model.h5'
 
 # Path to your training data
-train_data_dir = 'Training_Data/dogs'
+train_data_dir = 'Data/train_dogs'
 
 # Data generator for training
 train_datagen = ImageDataGenerator(rescale=1./255)
@@ -66,7 +66,7 @@ def classify_image(image_path, model):
         return "not dog", mse
 
 # Directory containing test images
-test_data_dir = 'Training_Data/test_dogs/dog'
+test_data_dir = 'Data/test_dogs/dogs'
 
 # Ensure the directory exists
 assert os.path.exists(test_data_dir), f"Directory '{test_data_dir}' not found."
