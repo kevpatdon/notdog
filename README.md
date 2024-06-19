@@ -5,9 +5,9 @@ This project involves developing an image classifier application that can determ
 
 **Key Features**
 
-•	Image Upload Interface: A user-friendly interface for uploading images for classification.
-•	Autoencoder-Based Classification: Utilizes an autoencoder neural network to reconstruct input images and measure reconstruction error to classify images.
-•	Dog vs. Not-Dog Detection: Classifies images based on reconstruction error, where images with high reconstruction error (indicating poor reconstruction) are classified as "Not-Dog."
+- Image Upload Interface: A user-friendly interface for uploading images for classification.
+- Autoencoder-Based Classification: Utilizes an autoencoder neural network to reconstruct input images and measure reconstruction error to classify images.
+- Dog vs. Not-Dog Detection: Classifies images based on reconstruction error, where images with high reconstruction error (indicating poor reconstruction) are classified as "Not-Dog."
 
 
 **Technical Details**
