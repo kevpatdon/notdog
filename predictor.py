@@ -9,7 +9,7 @@ import tensorflow as tf
 # Function to classify an image as dog or not dog
 image_width = 128
 image_height = 128
-mse_threshold = 0.055  # Adjust the threshold based on observations
+mse_threshold = 0.06  # Adjust the threshold based on observations
 
 def process_input(image_path):
     model = load_model('autoencoder_model.h5')
