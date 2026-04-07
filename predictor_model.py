@@ -1,124 +1,68 @@
-# autoencoder model for anomaly detection
+# predictor_model.py
 import os
-import numpy as np
+import json
+import tensorflow as tf
 from tensorflow.keras.layers import Input, Dense, Flatten, Reshape
 from tensorflow.keras.models import Model
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-import tensorflow as tf
 
-image_width = 128
-image_height = 128
-model_filename = 'autoencoder_model.h5'
+IMAGE_WIDTH = 128
+IMAGE_HEIGHT = 128
+MODEL_FILENAME = "autoencoder_model.h5"
+THRESHOLD_FILENAME = "model_config.json"
+TRAIN_DATA_DIR = "Data/train_dogs"
 
-# Path to your training data
-train_data_dir = 'Data/train_dogs'
+def build_autoencoder():
+    input_img = Input(shape=(IMAGE_WIDTH, IMAGE_HEIGHT, 3))
+    x = Flatten()(input_img)
+    encoded = Dense(128, activation="relu")(x)
+    decoded = Dense(IMAGE_WIDTH * IMAGE_HEIGHT * 3, activation="sigmoid")(encoded)
+    decoded = Reshape((IMAGE_WIDTH, IMAGE_HEIGHT, 3))(decoded)
 
-# Data generator for training
-train_datagen = ImageDataGenerator(rescale=1./255)
+    autoencoder = Model(input_img, decoded)
+    autoencoder.compile(optimizer="adam", loss="binary_crossentropy")
+    return autoencoder
 
-train_generator = train_datagen.flow_from_directory(
-    train_data_dir,
-    target_size=(image_width, image_height),
-    batch_size=100,
-    class_mode='input',  # Use 'input' for autoencoder
-    shuffle=True
-)
+def train_and_save():
+    if not os.path.exists(TRAIN_DATA_DIR):
+        raise FileNotFoundError(f"Training directory not found: {TRAIN_DATA_DIR}")
 
-# Define the autoencoder model
-input_img = Input(shape=(image_width, image_height, 3))
-x = Flatten()(input_img)
-encoded = Dense(128, activation='relu')(x)
-decoded = Dense(image_width * image_height * 3, activation='sigmoid')(encoded)
-decoded = Reshape((image_width, image_height, 3))(decoded)
+    train_datagen = ImageDataGenerator(rescale=1.0 / 255.0)
 
-autoencoder = Model(input_img, decoded)
+    train_generator = train_datagen.flow_from_directory(
+        TRAIN_DATA_DIR,
+        target_size=(IMAGE_WIDTH, IMAGE_HEIGHT),
+        batch_size=32,
+        class_mode="input",
+        shuffle=True
+    )
 
-# Compile the autoencoder
-autoencoder.compile(optimizer='adam', loss='binary_crossentropy')
+    if train_generator.samples == 0:
+        raise ValueError(
+            f"No training images found in {TRAIN_DATA_DIR}. "
+            f"Expected structure like Data/train_dogs/dogs/*.jpg"
+        )
 
-# Train the autoencoder
-autoencoder.fit(train_generator, epochs = 20)
+    model = build_autoencoder()
+    model.fit(train_generator, epochs=20)
 
-# Save the model to a HDF5 file
-autoencoder.save(model_filename)
+    model.save(MODEL_FILENAME)
 
-# Test
-mse_threshold = 0.07  # Adjust the threshold based on observations
+    config = {
+        "image_width": IMAGE_WIDTH,
+        "image_height": IMAGE_HEIGHT,
+        "mse_threshold": 0.068,
+        "model_filename": MODEL_FILENAME
+    }
 
-# Function to classify an image as dog or not dog
-def classify_image(image_path, model):
-    # Load and preprocess the image for prediction
-    img = tf.keras.preprocessing.image.load_img(image_path, target_size=(image_width, image_height))
-    img_array = tf.keras.preprocessing.image.img_to_array(img)
-    img_array = np.expand_dims(img_array, axis=0)
-    img_array /= 255.  # Normalize the image
+    with open(THRESHOLD_FILENAME, "w") as f:
+        json.dump(config, f)
 
-    # Predict using the loaded autoencoder
-    decoded_img = model.predict(img_array)
+    print(f"Saved model to {MODEL_FILENAME}")
+    print(f"Saved config to {THRESHOLD_FILENAME}")
 
-    # Calculate the mean squared error (MSE) as a measure of reconstruction error
-    mse = np.mean(np.square(img_array - decoded_img))
-
-    # Define a threshold to classify as dog or not dog
-    if mse < mse_threshold:
-        return "dog", mse
-    else:
-        return "not dog", mse
-
-# Directory containing test images
-test_data_dir = 'Data/test_dogs/dogs'
-
-# Ensure the directory exists
-assert os.path.exists(test_data_dir), f"Directory '{test_data_dir}' not found."
-
-# Initialize counters
-dog_count = 0
-not_dog_count = 0
-
-# List all files in the directory
-test_image_paths = [os.path.join(test_data_dir, fname) for fname in os.listdir(test_data_dir)]
-
-# Classify each image in the directory
-for image_path in test_image_paths:
-    classification, mse = classify_image(image_path, autoencoder)
-    if classification == "dog":
-        dog_count += 1
-    elif classification == "not dog":
-        not_dog_count += 1
-    print(f"{classification.capitalize()} - MSE: {mse:.4f} - {image_path}")
-
-# Print the final counts
-print(f"\nTotal Dogs: {dog_count}")
-print(f"Total Not Dogs: {not_dog_count}")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+if __name__ == "__main__":
+    train_and_save()
 
 # import os
 # import tensorflow as tf
